@@ -21,12 +21,14 @@ pipeline:
 
 In the above example we define two pipeline steps, `frontend` and `backend`. The names of these steps are completely arbitrary.
 
+<!-- TODO: use as intro for new global when: Woodpecker gives the ability to skip whole pipelines (not just steps) based on certain conditions. -->
 
-## Global Pipeline Conditionals
+## `branches`
 
-Woodpecker gives the ability to skip whole pipelines (not just steps) based on certain conditions.
+:::danger
+The current implementation of the `branches` filter has some known issues and will be replaced in the next version with a more generic solution supporting more options similar to the [pipeline step conditions](/docs/usage/pipeline-syntax#when---conditional-execution). See <https://github.com/woodpecker-ci/woodpecker/pull/770>
+:::
 
-### `branches`
 Woodpecker can skip commits based on the target branch. If the branch matches the `branches:` block the pipeline is executed, otherwise it is skipped.
 
 Example skipping a commit when the target branch is not master:
@@ -96,15 +98,7 @@ pipeline:
 +  exclude: [ develop, feature/* ]
 ```
 
-### Skip Commits
-
-Woodpecker gives the ability to skip individual commits by adding `[CI SKIP]` to the commit message. Note this is case-insensitive.
-
-```diff
-git commit -m "updated README [CI SKIP]"
-```
-
-## Steps
+## `pipeline.[step_name]` - Pipeline step
 
 Every step of your pipeline executes arbitrary commands inside a specified container. The defined commands are executed serially.
 The associated commit of a current pipeline run is checked out with git to a workspace which is mounted to every step of the pipeline as the working directory.
@@ -694,6 +688,14 @@ To use the ssh git url in `.gitmodules` for users cloning with ssh, and also use
 
 pipeline:
   ...
+```
+
+## Skip Commits
+
+Woodpecker gives the ability to skip individual commits by adding `[CI SKIP]` to the commit message. Note this is case-insensitive.
+
+```diff
+git commit -m "updated README [CI SKIP]"
 ```
 
 ## Privileged mode
